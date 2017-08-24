@@ -1,6 +1,6 @@
 MinesweeperZN
-Version RC-1
-By Robert Zink (rjz11@my.fsu.edu)
+Version 1.01
+By Robert Zink (robertzinkfl@gmail.com)
 
 MinesweeperZN is a modern day version of the popular game Minesweeper
 that was included with all versions of Microsoft Windows until Windows 7.
@@ -41,14 +41,16 @@ Game Difficulty (chance of tile having a mine):
 
 ---------------------------------------------------------------------------
 
-Game created by Robert Zink as a final course project for COP3252
+Created by Robert Zink, originally as a final course project for COP3252
 ~~~~~~~ Internet Applications Programming with Java ~~~~~~~
     at Florida State University's Computer Science department
     Summer 2017, taught by Sharanya Jayaraman.
+
+Updated post-Graduation.
 
 Programmed in JavaFX, based on core code presented in a YouTube tutorial
 by Almas Baimagambetov. (github.com/AlmasB)
 
 Emoji source:   emojistickers.com (non-commercial use license)
 Mine image:     thenounproject.com (CC license) - Edward Boatman, US
-Flag image:     icons-land.com (Free for commerical use licence)
+Flag image:     icons-land.com (Free for commercial use licence)

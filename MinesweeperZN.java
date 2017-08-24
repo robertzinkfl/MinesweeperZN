@@ -1,9 +1,8 @@
 /**
  * Robert Zink
- * rjz11@my.fsu.edu
- * COP3252 - Summer 2017
- * Game Project: Minesweeper
- * 20 June 2017
+ * robertzinkfl@gmail.com
+ * MinesweeperZN
+ * 24 August 2017
  *
  * MinesweeperZN.java
  */
@@ -13,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -22,7 +20,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -35,9 +32,9 @@ import javafx.stage.Stage;
 
 public class MinesweeperZN extends Application {
 
-    private int TILE_SIZE = (int) ((double) Screen.getPrimary().getVisualBounds().getHeight() / 30);
-    private int WIDTH = (int) ((double) Screen.getPrimary().getVisualBounds().getWidth() * 0.50);
-    private int HEIGHT = (int) ((double) Screen.getPrimary().getVisualBounds().getHeight() * 0.60);
+    private final int TILE_SIZE = (int) Screen.getPrimary().getVisualBounds().getHeight() / 30;
+    private final int WIDTH = (int) (Screen.getPrimary().getVisualBounds().getWidth() * 0.50);
+    private final int HEIGHT = (int) (Screen.getPrimary().getVisualBounds().getHeight() * 0.60);
 
     private int X_TILES = 15;
     private int Y_TILES = 15;
@@ -45,14 +42,12 @@ public class MinesweeperZN extends Application {
     private double difficulty = 0.2;
 
     private Tile[][] grid;
-    private Stage stage;
-    private Scene scene;
     private BorderPane window;
     private Text bottomText;
-    private Image mine = new Image("mine.png");
-    private Image flag = new Image("flag.png");
-    private Image good = new Image("cool_guy.png");
-    private Image bad = new Image("dead_guy.png");
+    private final Image mine = new Image("mine.png");
+    private final Image flag = new Image("flag.png");
+    private final Image good = new Image("cool_guy.png");
+    private final Image bad = new Image("dead_guy.png");
     private ImageView guy;
 
     private Parent createContent() {
@@ -156,14 +151,14 @@ public class MinesweeperZN extends Application {
     }
 
     private class Tile extends StackPane {
-        private int x, y;
-        private boolean hasBomb;
+        private final int x, y;
+        private final boolean hasBomb;
         private boolean flagged = false;
         private boolean isOpen = false;
-        private ImageView tileImage = new ImageView();
+        private final ImageView tileImage = new ImageView();
 
-        private Rectangle border = new Rectangle(TILE_SIZE - 2, TILE_SIZE - 2);
-        private Text text = new Text();
+        private final Rectangle border = new Rectangle(TILE_SIZE - 2, TILE_SIZE - 2);
+        private final Text text = new Text();
 
         public Tile(int x, int y, boolean hasBomb) {
             this.x = x;
@@ -188,33 +183,30 @@ public class MinesweeperZN extends Application {
 
             getChildren().addAll(border, text, tileImage);
 
-            setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    if(event.getButton() == MouseButton.PRIMARY) {
-                        if(!flagged)
-                            open();
+            setOnMouseClicked(event -> {
+                if(event.getButton() == MouseButton.PRIMARY) {
+                    if(!flagged)
+                        open();
+                        checkForWin();
+                }
+                else if(event.getButton() == MouseButton.SECONDARY) {
+                    if(!flagged) {
+                        if(!isOpen) {
+                            flagged = true;
+                            border.setFill(Color.AQUAMARINE);
+                            tileImage.setImage(flag);
+                            tileImage.setVisible(true);
                             checkForWin();
-                    }
-                    else if(event.getButton() == MouseButton.SECONDARY) {
-                        if(!flagged) {
-                            if(!isOpen) {
-                                flagged = true;
-                                border.setFill(Color.AQUAMARINE);
-                                tileImage.setImage(flag);
-                                tileImage.setVisible(true);
-                                checkForWin();
-                            }
                         }
-                        else {
-                            if(!isOpen) {
-                                flagged = false;
-                                border.setFill(Color.GRAY);
-                                tileImage.setVisible(false);
+                    }
+                    else {
+                        if(!isOpen) {
+                            flagged = false;
+                            border.setFill(Color.GRAY);
+                            tileImage.setVisible(false);
 
-                                if (hasBomb) {
-                                    tileImage.setImage(mine);
-                                }
+                            if (hasBomb) {
+                                tileImage.setImage(mine);
                             }
                         }
                     }
@@ -247,7 +239,7 @@ public class MinesweeperZN extends Application {
         }
     }
 
-    public void revealAllBombs() {
+    private void revealAllBombs() {
         for (int y = 0; y < Y_TILES; y++) {
             for (int x = 0; x < X_TILES; x++) {
                 if(grid[x][y].hasBomb) {
@@ -260,20 +252,19 @@ public class MinesweeperZN extends Application {
         guy.setImage(bad);
     }
 
-    public boolean checkForWin() {
+    private void checkForWin() {
         for (int y = 0; y < Y_TILES; y++) {
             for (int x = 0; x < X_TILES; x++) {
                 if(grid[x][y].hasBomb && grid[x][y].flagged)
                     continue;
                 if(grid[x][y].isOpen)
                     continue;
-                else return false;
+                else return;
             }
         }
 
         bottomText.setText("Yay! You win!");
         bottomText.setVisible(true);
-        return true;
     }
 
     private void setNumTiles(int numTiles) {
@@ -322,9 +313,9 @@ public class MinesweeperZN extends Application {
             while ((line = aboutReader.readLine()) != null) {
                 aboutTextArray.add(new Text(line));
             }
-            for(int i = 0; i < aboutTextArray.size(); i++) {
-                aboutTextArray.get(i).setId("#aboutText");
-                aboutBox.getChildren().add(aboutTextArray.get(i));
+            for (Text text : aboutTextArray) {
+                text.setId("#aboutText");
+                aboutBox.getChildren().add(text);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -356,7 +347,7 @@ public class MinesweeperZN extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        this.stage = stage;
+        // this.stage = stage;
         stage.setMinWidth(Screen.getPrimary().getVisualBounds().getWidth() * 0.50);
         stage.setMinHeight(Screen.getPrimary().getVisualBounds().getHeight() * 0.65);
 
@@ -396,7 +387,7 @@ public class MinesweeperZN extends Application {
         logoText.setFill(Color.BLACK);
         logoText.setVisible(true);
 
-        Text versionText = new Text("Version RC-1");
+        Text versionText = new Text("Version 1.01");
         versionText.setFont(Font.font("Courier New", FontPosture.ITALIC, 12));
         versionText.setFill(Color.BLACK);
         versionText.setVisible(true);
@@ -419,7 +410,7 @@ public class MinesweeperZN extends Application {
         window.setCenter(createContent());
         window.setBottom(hBox);
 
-        scene = new Scene(window, WIDTH, HEIGHT);
+        Scene scene = new Scene(window, WIDTH, HEIGHT);
 
         scene.getStylesheets().add(MinesweeperZN.class.getResource("MinesweeperZN.css").toExternalForm());
 
