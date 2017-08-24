@@ -1,10 +1,10 @@
 /**
- * Robert Zink
- * robertzinkfl@gmail.com
- * MinesweeperZN
- * 24 August 2017
+ * <h1>MinesweeperZN</h1>
+ * MinesweeperZN is a modern day recreation of Microsoft's Minesweeper program.
  *
- * MinesweeperZN.java
+ * @author Robert Zink
+ * @version 1.01
+ * @since 2017-08-24
  */
 
 import java.io.*;
@@ -50,6 +50,10 @@ public class MinesweeperZN extends Application {
     private final Image bad = new Image("dead_guy.png");
     private ImageView guy;
 
+    /**
+     * The createContent method is used to create the tile grid and display it in the application window.
+     * @return A parent node containing the game grid
+     */
     private Parent createContent() {
         GridPane root = new GridPane();
         grid = new Tile[X_TILES][Y_TILES];
@@ -120,6 +124,11 @@ public class MinesweeperZN extends Application {
         return root;
     }
 
+    /**
+     * The getNeighbors method is called to find the neighbors of a given tile in the game grid.
+     * @param tile The tile to find the neighbors for.
+     * @return A list of the neighbors to the current tile.
+     */
     private List<Tile> getNeighbors(Tile tile) {
         List<Tile> neighbors = new ArrayList<>();
 
@@ -150,6 +159,9 @@ public class MinesweeperZN extends Application {
         return neighbors;
     }
 
+    /**
+     * The tile class defines tiles in the game grid.
+     */
     private class Tile extends StackPane {
         private final int x, y;
         private final boolean hasBomb;
@@ -160,6 +172,12 @@ public class MinesweeperZN extends Application {
         private final Rectangle border = new Rectangle(TILE_SIZE - 2, TILE_SIZE - 2);
         private final Text text = new Text();
 
+        /**
+         * The Tile constructor creates a tile in the game grid.
+         * @param x The x coordinate of the created tile
+         * @param y The y coordinate of the created tile
+         * @param hasBomb Whether or not the tile has a mine
+         */
         public Tile(int x, int y, boolean hasBomb) {
             this.x = x;
             this.y = y;
@@ -214,15 +232,17 @@ public class MinesweeperZN extends Application {
             });
         }
 
+        /**
+         * The open method handles the revealing of tiles in the game grid.
+         */
         public void open() {
             if (isOpen)
                 return;
 
             if (hasBomb) {
-                // text.setVisible(true);
                 tileImage.setVisible(true);
                 border.setFill(Color.LIGHTSALMON);
-                // System.out.println("Game Over");
+                // System.out.println("Game Over"); // Used for debugging
                 revealAllBombs();
                 bottomText.setText("BOOM! You lose.");
                 bottomText.setVisible(true);
@@ -239,6 +259,10 @@ public class MinesweeperZN extends Application {
         }
     }
 
+    /**
+     * The revealAllBombs method, invoked on a loss, reveals the location of all the mines in the grid.
+     * Additionally, it will set the emoji to a sad face.
+     */
     private void revealAllBombs() {
         for (int y = 0; y < Y_TILES; y++) {
             for (int x = 0; x < X_TILES; x++) {
@@ -252,6 +276,9 @@ public class MinesweeperZN extends Application {
         guy.setImage(bad);
     }
 
+    /**
+     * The checkForWin method sets the win text for the game if all mines are flagged and all other tiles are open.
+     */
     private void checkForWin() {
         for (int y = 0; y < Y_TILES; y++) {
             for (int x = 0; x < X_TILES; x++) {
@@ -267,41 +294,40 @@ public class MinesweeperZN extends Application {
         bottomText.setVisible(true);
     }
 
+    /**
+     * The setNumTiles method changes the size of the game grid.
+     * @param numTiles The number of tiles in the X and Y coordinates
+     */
     private void setNumTiles(int numTiles) {
         X_TILES = numTiles;
         Y_TILES = numTiles;
         resetGrid();
     }
 
+    /**
+     * The setDifficulty method changes the difficulty of the game by altering the rate at which mines appear.
+     * @param mineRate The rate of mine formation.
+     */
     private void setDifficulty(double mineRate) {
         difficulty = mineRate;
         resetGrid();
     }
 
+    /**
+     * The resetGrid method resets the game grid with currently defined settings.
+     */
     private void resetGrid() {
         window.setCenter(createContent());
         guy.setImage(good);
         bottomText.setVisible(false);
     }
 
+    /**
+     * The getAboutScreen method is used to create a screen giving information about the game.
+     */
     private void getAboutScreen() {
         GridPane aboutGrid = new GridPane();
-        // Text aboutText;
         aboutGrid.setAlignment(Pos.CENTER);
-        /*try {
-            BufferedReader aboutReader = new BufferedReader(new InputStreamReader(new FileInputStream("src/README.txt")));
-            List<Text> aboutTextArray = new ArrayList<>();
-            String line;
-            while ((line = aboutReader.readLine()) != null) {
-                aboutTextArray.add(new Text(line));
-            }
-            for(int i = 0; i < aboutTextArray.size(); i++) {
-                aboutTextArray.get(i).setId("#aboutText");
-                aboutGrid.add(aboutTextArray.get(i), 0, i);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
 
         VBox aboutBox = new VBox();
         aboutBox.setAlignment(Pos.TOP_LEFT);
@@ -321,33 +347,23 @@ public class MinesweeperZN extends Application {
             e.printStackTrace();
         }
 
-
-        // aboutText = new Text(aboutReader.);
-        // aboutText.setVisible(true);
-
-        // aboutGrid.add(aboutText,0,0);
-
         ScrollPane scrollPane = new ScrollPane(aboutBox);
-        // ScrollBar scrollBar = new ScrollBar();
-        // scrollBar.setOrientation(Orientation.VERTICAL);
-        // scrollPane.setPrefSize(120,120);
-        // scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         scrollPane.setFitToHeight(true);
 
         BorderPane root = new BorderPane(scrollPane);
         root.setPadding(new Insets(15));
         root.getChildren().add(aboutBox);
 
-        // scrollPane.setHmax(WIDTH);
-        // scrollPane.setVmax(HEIGHT);
-        // scrollPane.setContent(aboutBox);
-
         window.setCenter(root);
     }
 
+    /**
+     * The start method sets up the application.
+     * @param stage The application stage.
+     * @throws Exception Exceptions should not be thrown.
+     */
     @Override
     public void start(Stage stage) throws Exception {
-        // this.stage = stage;
         stage.setMinWidth(Screen.getPrimary().getVisualBounds().getWidth() * 0.50);
         stage.setMinHeight(Screen.getPrimary().getVisualBounds().getHeight() * 0.65);
 
@@ -419,6 +435,10 @@ public class MinesweeperZN extends Application {
         stage.show();
     }
 
+    /**
+     * This is the main method, included for compatibility purposes.
+     * @param args Unused.
+     */
     public static void main(String[] args) {
         launch(args);
     }
